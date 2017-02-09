@@ -1,0 +1,77 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+        reactor_version = '3.0.4.RELEASE'
+        kotlin_version = '1.0.6'
+
+    }
+    repositories {
+        jcenter()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'org.springframework.boot'
+
+jar {
+    baseName = 'spring5demo'
+    version = '1.0.1-SNAPSHOT'
+}
+
+repositories {
+    jcenter()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    compile('org.springframework.boot:spring-boot-starter-data-mongodb')
+    compile('org.springframework:spring-context-support')
+    compile "com.fasterxml.jackson.core:jackson-databind:2.8.2"
+
+    // Reactive
+    compile('org.springframework.boot.experimental:spring-boot-starter-web-reactive') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+
+    // Reactor Netty
+    compile "io.projectreactor.addons:reactor-test"
+    compile "io.projectreactor.ipc:reactor-netty"
+
+    // RxNetty
+     /*compile "io.reactivex:rxnetty-common"
+     compile "io.reactivex:rxnetty-http"
+     compile "io.reactivex:rxjava-reactive-streams"*/
+
+    // Undertow
+//    compile "io.undertow:undertow-core"
+
+    // Reactive Mongo
+    compile "org.mongodb:mongodb-driver-reactivestreams:1.3.0"
+
+    // Freemarker
+    compile("org.freemarker:freemarker")
+
+    // runtime('org.springframework.boot:spring-boot-devtools')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot.experimental:spring-boot-dependencies-web-reactive:0.1.0.BUILD-SNAPSHOT"
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "3.3"
+    distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"
+}
